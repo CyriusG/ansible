@@ -1,0 +1,8 @@
+---
+- name: Install Vim and copy configuration files
+  hosts: dev-machines
+  remote_user: root
+
+  roles:
+    - vim
+    #- vim-config
