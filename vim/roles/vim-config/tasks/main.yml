@@ -1,0 +1,9 @@
+---
+- name: Copy the .vimrc file to root
+  copy: src=files/vimrc dest=/root/.vimrc
+
+- name: Copy the .vimrc file to users
+  copy: src=files/vimrc dest=/home/{{ item }}/.vimrc owner={{ item }} group="domain users@ad.cyriusg.se" mode=600
+  with_items:
+    - joacim@ad.cyriusg.se
+
