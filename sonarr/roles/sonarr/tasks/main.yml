@@ -1,0 +1,28 @@
+---
+- name: Add Sonarr user
+  user: name={{ sonarr_user }} shell=/sbin/nologin
+
+- name: Check if Sonarr is already installed
+  stat: path=/opt/sonarr
+  register: sonarr_installed
+
+- name: Download and extract Sonarr
+  unarchive: src={{ sonarr_download_url }} dest={{ sonarr_install_directory }} copy=no
+  when: not sonarr_installed.stat.exists
+
+- name: Rename NzbDrone folder to sonarr
+  command: mv {{ sonarr_install_directory }}NzbDrone/ {{ sonarr_install_directory }}{{ sonarr_folder_name }}
+  when: not sonarr_installed.stat.exists
+
+- name: Set the ownership of the sonarr folder
+  file: path={{ sonarr_install_directory }}{{ sonarr_folder_name }} owner={{ sonarr_user }} group={{ sonarr_group }} recurse=yes
+  when: not sonarr_installed.stat.exists
+
+- name: Copy systemd service file
+  template: src=files/sonarr.service.j2 dest=/usr/lib/systemd/system/sonarr.service
+
+- name: Open ports for Sonarr
+  firewalld: port=8989/tcp permanent=true state=enabled immediate=yes
+
+- name: Enable and start sonarr
+  service: name=sonarr enabled=yes state=started

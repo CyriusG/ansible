@@ -1,0 +1,6 @@
+---
+- name: Add epel repository
+  yum: name=epel-release state=present
+
+- name: Make selinux permissive
+  selinux: policy=targeted state=permissive

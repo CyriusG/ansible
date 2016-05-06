@@ -1,0 +1,21 @@
+---
+- name: Add repository key for Mono
+  rpm_key: state=present key=http://download.mono-project.com/repo/xamarin.gpg
+
+- name: Add Mono repository
+  yum_repository:
+    name: Mono
+    description: Repository for Mono
+    baseurl: http://download.mono-project.com/repo/centos/
+
+- name: Install dependencies
+  yum: name={{ item }} state=present
+  with_items:
+    - mono-core
+    - mono-devel
+    - mediainfo
+    - libzen
+    - libmediainfo
+    - curl
+    - gettext
+    - sqlite.x86_64
