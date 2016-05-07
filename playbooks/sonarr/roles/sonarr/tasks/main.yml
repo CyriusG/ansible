@@ -21,8 +21,5 @@
 - name: Copy systemd service file
   template: src=files/sonarr.service.j2 dest=/usr/lib/systemd/system/sonarr.service
 
-- name: Open ports for Sonarr
-  firewalld: port=8989/tcp permanent=true state=enabled immediate=yes
-
 - name: Enable and start sonarr
   service: name=sonarr enabled=yes state=started

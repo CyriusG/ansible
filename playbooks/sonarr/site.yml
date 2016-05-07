@@ -1,0 +1,47 @@
+---
+- hosts: sonarr
+  remote_user: root
+
+  roles:
+    - common
+    - mono
+    - sonarr
+    - firewalld
+  vars:
+    firewalld_rules:
+      sonarr:
+        port: 8989
+        protocol: tcp
+        state: enabled
+        zone: public
+        permanent: true
+
+- hosts: webservers
+  remote_user: root
+
+  roles:
+    - common
+    - role: nginx
+      nginx_http_params:
+        - sendfile on
+        - access_log /var/log/nginx/access.log
+      nginx_sites:
+        sonarr:
+          - listen 80
+          - server_name {{ sonarr_hostname }}
+          - |
+            location / {
+              proxy_set_header Host $host;
+              proxy_set_header X-Real-IP $remote_addr;
+              proxy_pass http://{{ hostvars[groups['sonarr'][0]]['ansible_fqdn'] }}:8989;
+            }
+    - firewalld
+  vars:
+    firewalld_rules:
+      http:
+        port: 80
+        protocol: tcp
+        state: enabled
+        zone: public
+        permanent: true
+      
