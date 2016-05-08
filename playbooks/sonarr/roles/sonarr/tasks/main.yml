@@ -5,7 +5,7 @@
 - name: Check if Sonarr is already installed
   stat: path=/opt/sonarr
   register: sonarr_installed
-
+  
 - name: Download and extract Sonarr
   unarchive: src={{ sonarr_download_url }} dest={{ sonarr_install_directory }} copy=no
   when: not sonarr_installed.stat.exists
