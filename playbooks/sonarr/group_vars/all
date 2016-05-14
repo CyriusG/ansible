@@ -5,4 +5,4 @@ sonarr_folder_name: sonarr
 sonarr_user: sonarr
 sonarr_group: sonarr
 sonarr_download_url: http://update.sonarr.tv/v2/master/mono/NzbDrone.master.tar.gz 
-sonarr_hostname: sonarr-dev.ad.cyriusg.se
+sonarr_hostname: sonarr.ad.cyriusg.se

@@ -3,13 +3,18 @@
 - name: Make selinux permissive
   selinux: policy=targeted state=permissive
 
+- name: Enable epel repo
+  yum: name=epel-release state=present
+ 
+- name: Install lbzip2 required to extract iRedMail
+  yum: name=lbzip2 state=present
+
 - name: Check if iredmail is already installed
-  stat: path=/opt/iRedMail*
+  stat: path=/opt/iRedMail
   register: iredmail_installed
 
-- name: Download and extract the latest iRedMail
-  unarchive: 
-    src=https://bitbucket.org/zhb/iredmail/downloads/iRedMail-0.9.5.tar.bz2 
-    dest=/opt/ 
-    copy=no 
-  when: not iredmail_installed.stat.exists
+- name: Download and extract iRedMail
+  unarchive:
+    src={{ iredmail_url }}
+    dest=/opt/
+    copy=no

@@ -1,0 +1,57 @@
+---
+- hosts: webservers
+  remote_user: root
+
+  roles:
+    - common
+    - role: nginx
+      nginx_http_params:
+        - sendfile on
+        - access_log /var/log/nginx/access.log
+      nginx_sites:
+        couchpotato:
+          - listen 80
+          - server_name couchpotato.ad.cyriusg.se
+          - |
+            location / {
+              proxy_set_header Host $host;
+              proxy_set_header X-Real-IP $remote_addr;
+              proxy_pass http://web.ad.cyriusg.se:5050;
+            }
+        rtorrent:
+          - listen 80 default_server
+          - root /var/www/rtorrent
+          - server_name rtorrent.ad.cyriusg.se
+          - |
+            location / {
+            }
+          - |
+            location ~ \.php$ {
+              try_files $uri =404;
+              fastcgi_pass unix:/var/run/php-fpm/php-fpm.sock;
+              fastcgi_index index.php;
+              fastcgi_param SCRIPT_FILENAME $document_root$fastcgi_script_name;
+              include fastcgi_params;
+            }
+          - |
+            location /RPC2 {
+              include scgi_params;
+              scgi_pass localhost:5000;
+            }
+        stats:
+          - listen 80
+          - root /var/www/stats
+          - server_name stats.ad.cyriusg.se
+          - |
+            location / {
+            }
+    - firewalld
+  vars:
+    firewalld_rules:
+      http:
+        port: 80
+        protocol: tcp
+        state: enabled
+        zone: public
+        permanent: true
+      

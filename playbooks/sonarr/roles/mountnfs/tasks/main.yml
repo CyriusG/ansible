@@ -1,0 +1,6 @@
+---
+- name: Install NFS client
+  yum: name=nfs-utils state=present
+
+- name: Mount nfs share
+  mount: name=/mnt src=nas.ad.cyriusg.se:/tank/files fstype=nfs state=mounted

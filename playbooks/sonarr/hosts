@@ -1,5 +1,5 @@
 [sonarr]
-ansible-dev01.ad.cyriusg.se
+sonarr01.ad.cyriusg.se
 
 [webservers]
-ansible-dev01.ad.cyriusg.se
+web.ad.cyriusg.se

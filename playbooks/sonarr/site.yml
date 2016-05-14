@@ -1,4 +1,4 @@
----
+
 - hosts: sonarr
   remote_user: root
 
@@ -33,7 +33,7 @@
             location / {
               proxy_set_header Host $host;
               proxy_set_header X-Real-IP $remote_addr;
-              proxy_pass http://{{ hostvars[groups['sonarr'][0]]['ansible_fqdn'] }}:8989;
+              proxy_pass http://sonarr01.ad.cyriusg.se:8989;
             }
     - firewalld
   vars:
