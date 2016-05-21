@@ -19,11 +19,13 @@
               proxy_pass http://web.ad.cyriusg.se:5050;
             }
         rtorrent:
-          - listen 80 default_server
+          - listen 80
           - root /var/www/rtorrent
           - server_name rtorrent.ad.cyriusg.se
           - |
             location / {
+              auth_basic "TorrentJocke";
+              auth_basic_user_file /etc/nginx/.htpasswd;
             }
           - |
             location ~ \.php$ {
@@ -45,6 +47,78 @@
           - |
             location / {
             }
+        nit13-redirect:
+          - listen 80
+          - server_name *.nit13.se
+          - return 301 https://$host$request_uri
+        nit13-request:
+          - listen 443 ssl
+          - server_name request.nit13.se
+          - ssl on
+          - ssl_certificate /etc/letsencrypt/live/request.nit13.se/fullchain.pem
+          - ssl_certificate_key /etc/letsencrypt/live/request.nit13.se/privkey.pem
+          - |
+            location / {
+              proxy_pass http://192.168.3.189:3000;
+              proxy_set_header Host $host;
+              proxy_set_header X-Real-IP $remote_addr;
+              proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+              proxy_set_header X-Forwarded-Proto https;
+            }
+        nit13-sonarr:
+          - listen 443 ssl
+          - server_name sonarr.nit13.se
+          - ssl on
+          - ssl_certificate /etc/letsencrypt/live/sonarr.nit13.se/fullchain.pem
+          - ssl_certificate_key /etc/letsencrypt/live/sonarr.nit13.se/privkey.pem
+          - |
+            location / {
+              proxy_pass http://192.168.3.185:8989;
+              proxy_set_header Host $host;
+              proxy_set_header X-Real-IP $remote_addr;
+              proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+              proxy_set_header X-Forwarded-Proto https;
+            }
+        nit13-couchpotato:
+          - listen 443 ssl
+          - server_name couchpotato.nit13.se
+          - ssl on
+          - ssl_certificate /etc/letsencrypt/live/couchpotato.nit13.se/fullchain.pem
+          - ssl_certificate_key /etc/letsencrypt/live/couchpotato.nit13.se/privkey.pem
+          - |
+            location / {
+              proxy_pass http://192.168.3.65:5050;
+              proxy_set_header Host $host;
+              proxy_set_header X-Real-IP $remote_addr;
+              proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+              proxy_set_header X-Forwarded-Proto https;
+            }
+        nit13-torrent:
+          - listen 443 ssl
+          - root /var/www/rtorrent
+          - server_name torrent.nit13.se
+          - ssl on
+          - ssl_certificate /etc/letsencrypt/live/torrent.nit13.se/fullchain.pem
+          - ssl_certificate_key /etc/letsencrypt/live/torrent.nit13.se/privkey.pem
+          - |
+            location / {
+              auth_basic "TorrentJocke";
+              auth_basic_user_file /etc/nginx/.htpasswd;
+            }
+          - |
+            location ~ \.php$ {
+              try_files $uri =404;
+              fastcgi_pass unix:/var/run/php-fpm/php-fpm.sock;
+              fastcgi_index index.php;
+              fastcgi_param SCRIPT_FILENAME $document_root$fastcgi_script_name;
+              include fastcgi_params;
+            }
+          - |
+            location /RPC2 {
+              include scgi_params;
+              scgi_pass localhost:5000;
+            }
+ 
     - firewalld
   vars:
     firewalld_rules:
@@ -54,4 +128,11 @@
         state: enabled
         zone: public
         permanent: true
+      https:
+        port: 443
+        protocol: tcp
+        state: enabled
+        zone: public
+        permanent: true
+
       
