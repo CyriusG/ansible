@@ -52,9 +52,19 @@
           - server_name *.nit13.se
           - return 301 https://$host$request_uri
         nit13-request:
-          - listen 443 ssl
+          - listen 443 ssl spdy
           - server_name request.nit13.se
-          - ssl on
+          - add_header Strict-Transport-Security max-age=31536000
+          - ssl_protocols TLSv1 TLSv1.1 TLSv1.2
+          - ssl_ciphers ECDH+AESGCM:DH+AESGCM:ECDH+AES256:DH+AES256:ECDH+AES128:DH+AES:ECDH+3DES:DH+3DES:RSA+AESGCM:RSA+AES:RSA+3DES:!aNULL:!MD5:!DSS
+          - ssl_buffer_size 8k
+          - ssl_prefer_server_ciphers on
+          - ssl_session_cache shared:SSL:30m
+          - ssl_session_timeout 30m
+          - ssl_dhparam /etc/ssl/dhparam.pem
+          - ssl_stapling on
+          - resolver 8.8.8.8
+          - ssl_stapling_verify on
           - ssl_certificate /etc/letsencrypt/live/request.nit13.se/fullchain.pem
           - ssl_certificate_key /etc/letsencrypt/live/request.nit13.se/privkey.pem
           - |
@@ -66,9 +76,19 @@
               proxy_set_header X-Forwarded-Proto https;
             }
         nit13-sonarr:
-          - listen 443 ssl
+          - listen 443 ssl spdy
           - server_name sonarr.nit13.se
-          - ssl on
+          - add_header Strict-Transport-Security max-age=31536000
+          - ssl_protocols TLSv1 TLSv1.1 TLSv1.2
+          - ssl_ciphers ECDH+AESGCM:DH+AESGCM:ECDH+AES256:DH+AES256:ECDH+AES128:DH+AES:ECDH+3DES:DH+3DES:RSA+AESGCM:RSA+AES:RSA+3DES:!aNULL:!MD5:!DSS
+          - ssl_buffer_size 8k
+          - ssl_prefer_server_ciphers on
+          - ssl_session_cache shared:SSL:30m
+          - ssl_session_timeout 30m
+          - ssl_dhparam /etc/ssl/dhparam.pem
+          - ssl_stapling on
+          - resolver 8.8.8.8
+          - ssl_stapling_verify on
           - ssl_certificate /etc/letsencrypt/live/sonarr.nit13.se/fullchain.pem
           - ssl_certificate_key /etc/letsencrypt/live/sonarr.nit13.se/privkey.pem
           - |
@@ -80,9 +100,19 @@
               proxy_set_header X-Forwarded-Proto https;
             }
         nit13-couchpotato:
-          - listen 443 ssl
+          - listen 443 ssl spdy
           - server_name couchpotato.nit13.se
-          - ssl on
+          - add_header Strict-Transport-Security max-age=31536000
+          - ssl_protocols TLSv1 TLSv1.1 TLSv1.2
+          - ssl_ciphers ECDH+AESGCM:DH+AESGCM:ECDH+AES256:DH+AES256:ECDH+AES128:DH+AES:ECDH+3DES:DH+3DES:RSA+AESGCM:RSA+AES:RSA+3DES:!aNULL:!MD5:!DSS
+          - ssl_buffer_size 8k
+          - ssl_prefer_server_ciphers on
+          - ssl_session_cache shared:SSL:30m
+          - ssl_session_timeout 30m
+          - ssl_dhparam /etc/ssl/dhparam.pem
+          - ssl_stapling on
+          - resolver 8.8.8.8
+          - ssl_stapling_verify on
           - ssl_certificate /etc/letsencrypt/live/couchpotato.nit13.se/fullchain.pem
           - ssl_certificate_key /etc/letsencrypt/live/couchpotato.nit13.se/privkey.pem
           - |
@@ -94,10 +124,20 @@
               proxy_set_header X-Forwarded-Proto https;
             }
         nit13-torrent:
-          - listen 443 ssl
+          - listen 443 ssl spdy
           - root /var/www/rtorrent
           - server_name torrent.nit13.se
-          - ssl on
+          - add_header Strict-Transport-Security max-age=31536000
+          - ssl_protocols TLSv1 TLSv1.1 TLSv1.2
+          - ssl_ciphers ECDH+AESGCM:DH+AESGCM:ECDH+AES256:DH+AES256:ECDH+AES128:DH+AES:ECDH+3DES:DH+3DES:RSA+AESGCM:RSA+AES:RSA+3DES:!aNULL:!MD5:!DSS
+          - ssl_buffer_size 8k
+          - ssl_prefer_server_ciphers on
+          - ssl_session_cache shared:SSL:30m
+          - ssl_session_timeout 30m
+          - ssl_dhparam /etc/ssl/dhparam.pem
+          - ssl_stapling on
+          - resolver 8.8.8.8
+          - ssl_stapling_verify on
           - ssl_certificate /etc/letsencrypt/live/torrent.nit13.se/fullchain.pem
           - ssl_certificate_key /etc/letsencrypt/live/torrent.nit13.se/privkey.pem
           - |
